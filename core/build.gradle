@@ -1,0 +1,16 @@
+sourceCompatibility = 1.7
+
+eclipse.project {
+    name = appName
+}
+dependencies {
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.testng:testng:6.9.6'
+}
