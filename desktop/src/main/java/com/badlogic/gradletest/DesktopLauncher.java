@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class DesktopLauncher {
 
 	public static void main (String[] arg) {
-		Texture.setEnforcePotImages(false);
+		//Texture.setEnforcePotImages(false);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new Application(), config);
