@@ -1,7 +1,6 @@
-package coffeefox.model.Utils;
+package coffeefoxstudios.model.utils;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.HashMap;
 import java.util.Map;

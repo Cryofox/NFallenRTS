@@ -1,4 +1,4 @@
-package coffeefox.tests;
+package coffeefoxstudios.tests;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 
