@@ -4,15 +4,13 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-/**
- * Created by Ryder Stancescu on 4/23/2017.
- */
-public class Renderer {
+
+public class RenderUtil {
 
     SpriteBatch spriteBatch;
     ShapeRenderer shapeRenderer;
 
-    public Renderer()
+    public RenderUtil()
     {
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();

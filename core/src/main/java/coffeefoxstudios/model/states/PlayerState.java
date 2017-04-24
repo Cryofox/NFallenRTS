@@ -10,18 +10,16 @@ import com.sun.glass.ui.View;
 /**
  * Class used to Determine what state we are in, and where we want to go.
  */
-public class PlayerState {
-
+public enum PlayerState {
+    Default,
+    Commanding,
+    Building
     /*
         Idle  (Empty State, not doing anything specific)
         Placing a Building
         Commanding Squads (Have 1 or more squads selected and ordering commands to.
         Select Unit (Left click on unit to see info)
      */
-
-
-
-
 //Player State should be seperate from UI State
 
 
@@ -42,11 +40,7 @@ public class PlayerState {
         [Command Center] [Mine Ops] [ Barracks ] []
         [] [] [] []
         [] [] [] [Next ->]
-
-
-
      */
-
 
 
 }

@@ -68,4 +68,22 @@ public class CollisionManager {
         }
         return null;
     }
+
+    /**
+     * Checks ALL Render Lists
+     * @param point
+     * @return
+     */
+    public Renderable getRenderable(Vector3 point)
+    {
+        for(Renderable renderable : squads)
+        {
+            if(renderable.getBoundingBox().contains(point.x, point.y))
+            {
+                return renderable;
+            }
+        }
+        return null;
+    }
+
 }

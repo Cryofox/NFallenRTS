@@ -15,8 +15,9 @@ public interface Renderable {
 
 
     void update(float timeDelta);
-    void render(Renderer renderer);
-    void renderDebug(Renderer renderer);
+    void render(RenderUtil renderer);
+    void renderDebug(RenderUtil renderer);
 
     void setSelectedType(SelectedTypes type);
+    SelectedTypes getSelectedType();
 }

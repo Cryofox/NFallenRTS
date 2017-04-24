@@ -5,8 +5,8 @@ package coffeefoxstudios.model;
  */
 
 import coffeefoxstudios.model.states.GameState;
+import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;
-import coffeefoxstudios.model.utils.Renderer;
 import coffeefoxstudios.model.utils.SelectedTypes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  * Players give orders to Squads, who then relay the order to their units.
  */
 public class Squad implements Renderable {
-    private static final Log log = LogFactory.getLog(GameState.class);
+    private static final Log log = LogFactory.getLog(Squad.class);
 
     private Vector3 position;
     SelectedTypes selectedType = SelectedTypes.None;
@@ -60,13 +60,13 @@ public class Squad implements Renderable {
     }
 
     @Override
-    public void render(Renderer renderer) {
+    public void render(RenderUtil renderer) {
 
     }
 
     @Override
-    public void renderDebug(Renderer renderer) {
-        log.info("RenderPosition:" + position.toString());
+    public void renderDebug(RenderUtil renderer) {
+//        log.info("RenderPosition:" + position.toString());
         //Render the Position in Blue
         ShapeRenderer shapes = renderer.getShapeRenderer();
         if (position != null) {
@@ -104,6 +104,11 @@ public class Squad implements Renderable {
     @Override
     public void setSelectedType(SelectedTypes type) {
         selectedType = type;
+    }
+
+    @Override
+    public SelectedTypes getSelectedType() {
+        return selectedType;
     }
 
 

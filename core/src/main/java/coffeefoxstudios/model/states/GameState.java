@@ -2,8 +2,9 @@ package coffeefoxstudios.model.states;
 
 import coffeefoxstudios.model.Squad;
 import coffeefoxstudios.model.managers.CollisionManager;
-import coffeefoxstudios.model.utils.Renderer;
 import coffeefoxstudios.model.managers.SquadManager;
+import coffeefoxstudios.model.states.controllers.PlayerController;
+import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.SelectedTypes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,9 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,20 +23,20 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameState {
     private static final Log log = LogFactory.getLog(GameState.class);
 
-    Renderer renderer = null;
+    RenderUtil renderer = null;
 
     OrthographicCamera gameCamera;
     Vector2 cameraTranslation = new Vector2(0, 0);
     Viewport viewport;
 
     Vector3 mousePosition = new Vector3(0, 0, 0);
-
+    PlayerController playerController;
     //Screen HalfDimensions
     int halfWidth = 1;
     int halfHeight = 1;
 
     public GameState(SpriteBatch spriteBatch) {
-        renderer = new Renderer();
+        renderer = new RenderUtil();
 
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -55,6 +54,9 @@ public class GameState {
         halfHeight = viewport.getScreenHeight() / 2;
         gameCamera.position.set(0, 0, 0);
 
+        playerController = new PlayerController(this);
+
+        Gdx.input.setInputProcessor(playerController);
         stubInitialize();
     }
 
@@ -79,7 +81,7 @@ public class GameState {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         //Update Player Input
-        updateInput();
+        updateInput(deltaTime);
 
         //Update Game
         SquadManager.getInstance().update(deltaTime);
@@ -88,31 +90,21 @@ public class GameState {
         gameCamera.update();
     }
 
-    void updateInput() {
-//        log.info("Mouse:["+Gdx.input.getX()+","+Gdx.input.getY()+"]");
-        updateMouse();
+    void updateInput(float deltaTime) {
+
+        //Update Controller
+        playerController.update(deltaTime);
         updateKeyboard();
     }
 
+
     /**
-     * Logic for Mouse Updates
+     * Unprojects the Screen Position to World Space
+     * @param screenPosition
      */
-    void updateMouse() {
-        //Update Mouse Coordinates
-        //Get RAW Mouse Position
-        mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        //Unproject the mouse' Screen Coordinates to world coordinates via the camera using the viewport.
-        gameCamera.unproject(mousePosition,viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
-
-
-        //Grab Squad
-        Squad hoverOverSquad = CollisionManager.getInstance().getSquad(new Vector2(mousePosition.x,mousePosition.y));
-        if(hoverOverSquad!=null)
-        {
-            hoverOverSquad.setSelectedType(SelectedTypes.Highlighted);
-        }
-
-
+    public void unproject(Vector3 screenPosition)
+    {
+        gameCamera.unproject(screenPosition,viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
     }
 
 
@@ -141,7 +133,7 @@ public class GameState {
         gameCamera.update();
 //        spriteBatch.setProjectionMatrix(gameCamera.combined);
 
-        //Update Renderer when the camera moves.
+        //Update RenderUtil when the camera moves.
         renderer.updateRenderers(gameCamera);
     }
 
@@ -150,7 +142,7 @@ public class GameState {
      * Render Cycle for this State
      */
     public void render() {
-        //Update Renderer by GameCamera Projection
+        //Update RenderUtil by GameCamera Projection
 //        renderer.updateRenderers(gameCamera);
 
 

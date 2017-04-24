@@ -1,9 +1,7 @@
 package coffeefoxstudios.model.managers;
 
-import coffeefoxstudios.model.Actor;
 import coffeefoxstudios.model.Squad;
-import coffeefoxstudios.model.utils.Renderable;
-import coffeefoxstudios.model.utils.Renderer;
+import coffeefoxstudios.model.utils.RenderUtil;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ public class SquadManager  {
     }
 
 
-    public void render(Renderer renderer) {
+    public void render(RenderUtil renderer) {
 
         for(Squad squad : squadList)
         {
@@ -64,7 +62,7 @@ public class SquadManager  {
     }
 
 
-    public void renderDebug(Renderer renderer) {
+    public void renderDebug(RenderUtil renderer) {
         for(Squad squad : squadList)
         {
             squad.renderDebug(renderer);
