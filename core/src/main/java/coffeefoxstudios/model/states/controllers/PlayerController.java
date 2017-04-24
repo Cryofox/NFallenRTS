@@ -10,13 +10,15 @@ import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;
 
 import coffeefoxstudios.model.utils.SelectedTypes;
-import coffeefoxstudios.view.Camera;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +47,13 @@ public class PlayerController implements InputProcessor {
 
 
     //Mouse Values
-    Vector3 startMouseDownPositionLeft = new Vector3(0, 0, 0);
-    Vector3 mousePosition = new Vector3(0, 0, 0);
+    Vector3 startMouseDownPosition = new Vector3(0, 0, 0);
+    Vector3 mousePosition = new Vector3(-99, -99, 0);
 
     boolean leftMouseJustPressed = false;
     MouseButtonState leftMouseState = MouseButtonState.Up;
 
-
+    Rectangle boxSelect= new Rectangle();
     GameState gameState =null;
     //MouseState
     public PlayerController(GameState gameState) {
@@ -89,22 +91,81 @@ public class PlayerController implements InputProcessor {
     }
 
     public void render(RenderUtil renderer) {
+        //Draw a Selection Box
+//        log.info("MouseState:"+ leftMouseState.toString());
+        ShapeRenderer shapes = renderer.getShapeRenderer();
+        shapes.begin(ShapeRenderer.ShapeType.Line);
+        if(leftMouseState == MouseButtonState.HeldDown)
+        {
+            shapes.setColor(1,1,1,1);
+            shapes.rect(boxSelect.x,boxSelect.y, boxSelect.width,boxSelect.height);
+//            log.info("MPS:"+startMouseDownPosition);
+//            log.info("MP:"+mousePosition);
+//            log.info("Rectangle:" + rectangle.getX() +","+rectangle.getY()+","+rectangle.getWidth()+","+rectangle.getHeight());
+            shapes.setColor(0,1,0,1);
+            shapes.circle(startMouseDownPosition.x,startMouseDownPosition.y,5);
+        }
+        shapes.setColor(1,0,0,1);
+        shapes.circle(mousePosition.x,mousePosition.y,5);
 
 
+        shapes.end();;
+    }
+
+    /**
+     * Select all Units inside BoxSelect. Remember only UNITS can be selected via box select
+     */
+    private void boxSelectUnits()
+    {
+        //Clear Selections
+        clearSelections();
+
+        //Grab new SelectedUnits (if any)
+        selectedUnits = CollisionManager.getInstance().getSelectedUnits(boxSelect);
+        if(selectedUnits!=null)
+        {
+            for(Squad squad: selectedUnits)
+            {
+                squad.setSelectedType(SelectedTypes.Selected);
+            }
+        }
+        log.info("SelectedUnits:"+selectedUnits.size());
+    }
+
+
+    private void clearSelections()
+    {
+        if(selectedUnits!=null)
+        {
+            for(Squad squad: selectedUnits)
+            {
+                squad.setSelectedType(SelectedTypes.None);
+            }
+        }
+        if(selectedBuildings!=null)
+        {
+            for(Building building: selectedBuildings)
+            {
+                building.setSelectedType(SelectedTypes.None);
+            }
+        }
     }
 
     @Override
     public boolean keyDown(int keycode) {
+        updateMousePosition();
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        updateMousePosition();
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
+        updateMousePosition();
         return false;
     }
 
@@ -116,7 +177,10 @@ public class PlayerController implements InputProcessor {
             if (leftMouseState == MouseButtonState.Up) {
                 leftMouseJustPressed = true;
                 leftMouseState = MouseButtonState.Down;
-                startMouseDownPositionLeft.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                startMouseDownPosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                //Unproject the mouse Start
+                gameState.unproject(startMouseDownPosition);
+//                log.info("SETTING MOUSEDOWN START");
             } else {
                 leftMouseJustPressed = false;
             }
@@ -124,27 +188,44 @@ public class PlayerController implements InputProcessor {
         return true;
     }
 
+
+    private void updateBoxSelect()
+    {
+        float minX = Math.min(startMouseDownPosition.x, mousePosition.x);
+        float maxX = Math.max(startMouseDownPosition.x, mousePosition.x);
+        float minY = Math.min(startMouseDownPosition.y, mousePosition.y);
+        float maxY = Math.max(startMouseDownPosition.y, mousePosition.y);
+        boxSelect.set(minX, minY, maxX-minX, maxY-minY);
+    }
+
+
+
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
             leftMouseJustPressed = false; //Reset LeftMouseState
+            //Selection Logic
+            boxSelectUnits();
+            leftMouseState = MouseButtonState.Up;
         }
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+        updateMousePosition();
+        if(leftMouseState == MouseButtonState.Down)
+        {
+            leftMouseState = MouseButtonState.HeldDown;
+            //Update BoxSelect
+            updateBoxSelect();
+        }
+        return true;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-//        log.info("MousePosition:" + mousePosition.toString());
-        mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-
-        //Unproject the MousePosition
-        gameState.unproject(mousePosition);
-
+        updateMousePosition();
         return true;
     }
 
@@ -152,4 +233,14 @@ public class PlayerController implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
+
+    private void updateMousePosition()
+    {
+        mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        //Unproject the MousePosition
+        gameState.unproject(mousePosition);
+        updateBoxSelect();
+    }
 }
+

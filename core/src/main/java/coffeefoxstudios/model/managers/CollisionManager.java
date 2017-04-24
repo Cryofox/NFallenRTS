@@ -37,6 +37,7 @@ public class CollisionManager {
     public void addSquad(Squad entity)
     {
         squads.add(entity);
+
     }
     //Add Projectile
 
@@ -45,12 +46,28 @@ public class CollisionManager {
     {
         Rectangle rect1 = entity1.getBoundingBox();
         Rectangle rect2 = entity2.getBoundingBox();
+        return collides(rect1,rect2);
+    }
+
+
+    public List<Squad> getSelectedUnits(Rectangle boxSelect)
+    {
+        List<Squad> squadList = new ArrayList<>();
+        for(Renderable squad : squads)
+        {
+            if(collides(boxSelect,squad.getBoundingBox()))
+                squadList.add((Squad)squad);
+        }
+        return squadList;
+    }
+
+    private boolean collides(Rectangle rect1, Rectangle rect2)
+    {
         if(rect1.contains(rect2) || rect2.contains(rect1)
                 || rect1.overlaps(rect2))
         {   return true;}
         return false;
     }
-
 
     /**
      * Gets the Squad that is highlighted over the position.

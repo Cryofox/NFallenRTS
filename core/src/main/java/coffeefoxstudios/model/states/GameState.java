@@ -29,7 +29,6 @@ public class GameState {
     Vector2 cameraTranslation = new Vector2(0, 0);
     Viewport viewport;
 
-    Vector3 mousePosition = new Vector3(0, 0, 0);
     PlayerController playerController;
     //Screen HalfDimensions
     int halfWidth = 1;
@@ -64,6 +63,7 @@ public class GameState {
     private void stubInitialize()
     {
         SquadManager.getInstance().spawnSquad(new Vector3(0,0,0));
+        SquadManager.getInstance().spawnSquad(new Vector3(10,10,0));
     }
 
 
@@ -105,6 +105,8 @@ public class GameState {
     public void unproject(Vector3 screenPosition)
     {
         gameCamera.unproject(screenPosition,viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+//        gameCamera.unproject(screenPosition);
+
     }
 
 
@@ -163,6 +165,7 @@ public class GameState {
 
         //Render Game OverLays
         //------------
+        renderGameOverlay();
         //============
 
         //Render Game Debug OverLays
@@ -200,6 +203,7 @@ public class GameState {
     }
 
     void renderGameOverlay() {
+        playerController.render(renderer);
     }
     void renderGameDebugOverlay() {
         //Render Environment

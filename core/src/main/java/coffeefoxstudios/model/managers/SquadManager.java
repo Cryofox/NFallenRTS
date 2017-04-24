@@ -36,6 +36,7 @@ public class SquadManager  {
         //Add to CollisionManager
         CollisionManager.getInstance().addSquad(squad);
 
+
         return squad;
     }
 
