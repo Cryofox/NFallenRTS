@@ -84,7 +84,7 @@ public class PlayerController implements InputProcessor {
                 }
             }
         }
-
+        //Only Set Highlighted Unit if we are not trying to place down a structure.
         if (currentState != PlayerState.Building) {
             highlightedInteractable = CollisionManager.getInstance().getRenderable(mousePosition);
             if (highlightedInteractable != null) {
@@ -95,7 +95,6 @@ public class PlayerController implements InputProcessor {
 
     public void render(RenderUtil renderer) {
         //Draw a Selection Box
-//        log.info("MouseState:"+ leftMouseState.toString());
         ShapeRenderer shapes = renderer.getShapeRenderer();
         shapes.begin(ShapeRenderer.ShapeType.Line);
         if (leftMouseState == MouseButtonState.HeldDown) {
@@ -104,16 +103,15 @@ public class PlayerController implements InputProcessor {
             shapes.setColor(0, 1, 0, 1);
             shapes.circle(startMouseDownPosition.x, startMouseDownPosition.y, 5);
         }
+        //Draw where the Mouse Currently Is
         shapes.setColor(1, 0, 0, 1);
         shapes.circle(mousePosition.x, mousePosition.y, 5);
-
-
         shapes.end();
-
     }
 
     /**
      * Select all Units inside BoxSelect. Remember only UNITS can be selected via box select
+     * Set using mouseStart(TouchDown), Called once TouchUp event is called from LeftMouse
      */
     private void boxSelectUnits() {
         //Clear Selections
@@ -174,8 +172,7 @@ public class PlayerController implements InputProcessor {
         updateMousePosition();
         return false;
     }
-
-
+    
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         updateMousePosition();
