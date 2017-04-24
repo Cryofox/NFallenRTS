@@ -1,11 +1,15 @@
 package coffeefoxstudios.model.states.controllers;
 
 
+import coffeefoxstudios.model.Actor;
 import coffeefoxstudios.model.Building;
 import coffeefoxstudios.model.Squad;
 import coffeefoxstudios.model.managers.CollisionManager;
+import coffeefoxstudios.model.managers.SquadManager;
 import coffeefoxstudios.model.states.GameState;
 import coffeefoxstudios.model.states.PlayerState;
+import coffeefoxstudios.model.states.commands.SquadOrder;
+import coffeefoxstudios.model.states.commands.SquadOrderCommand;
 import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;
 
@@ -16,18 +20,18 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import javafx.scene.input.KeyCode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerController implements InputProcessor {
     private static final Log log = LogFactory.getLog(PlayerController.class);
-
+    private static final Vector3 DEFAULT = new Vector3(-999, -999, -999);
     Renderable highlightedInteractable;
-    //Can't Select Units and Buildings.
+    //Can't Select Units and Buildings. You can only select One or the other as a group.
 
     //4 Ways to Select Units:
     // Box Select
@@ -42,7 +46,6 @@ public class PlayerController implements InputProcessor {
 
     List<Squad> selectedUnits;
     List<Building> selectedBuildings;
-
     PlayerState currentState = PlayerState.Default;
 
 
@@ -52,15 +55,17 @@ public class PlayerController implements InputProcessor {
 
     boolean leftMouseJustPressed = false;
     MouseButtonState leftMouseState = MouseButtonState.Up;
+    MouseButtonState rightMouseState = MouseButtonState.Up;
+    Rectangle boxSelect = new Rectangle();
+    GameState gameState = null;
+    SquadOrderCommand selectedOrderType = SquadOrderCommand.Move;
 
-    Rectangle boxSelect= new Rectangle();
-    GameState gameState =null;
     //MouseState
     public PlayerController(GameState gameState) {
         this.gameState = gameState;
         highlightedInteractable = null;
         selectedUnits = new ArrayList<>();
-        selectedBuildings= new ArrayList<>();
+        selectedBuildings = new ArrayList<>();
     }
 
     public void update(float deltaTime) {
@@ -80,11 +85,9 @@ public class PlayerController implements InputProcessor {
             }
         }
 
-
         if (currentState != PlayerState.Building) {
             highlightedInteractable = CollisionManager.getInstance().getRenderable(mousePosition);
-            if(highlightedInteractable!=null)
-            {
+            if (highlightedInteractable != null) {
                 highlightedInteractable.setSelectedType(SelectedTypes.Highlighted);
             }
         }
@@ -95,57 +98,48 @@ public class PlayerController implements InputProcessor {
 //        log.info("MouseState:"+ leftMouseState.toString());
         ShapeRenderer shapes = renderer.getShapeRenderer();
         shapes.begin(ShapeRenderer.ShapeType.Line);
-        if(leftMouseState == MouseButtonState.HeldDown)
-        {
-            shapes.setColor(1,1,1,1);
-            shapes.rect(boxSelect.x,boxSelect.y, boxSelect.width,boxSelect.height);
-//            log.info("MPS:"+startMouseDownPosition);
-//            log.info("MP:"+mousePosition);
-//            log.info("Rectangle:" + rectangle.getX() +","+rectangle.getY()+","+rectangle.getWidth()+","+rectangle.getHeight());
-            shapes.setColor(0,1,0,1);
-            shapes.circle(startMouseDownPosition.x,startMouseDownPosition.y,5);
+        if (leftMouseState == MouseButtonState.HeldDown) {
+            shapes.setColor(1, 1, 1, 1);
+            shapes.rect(boxSelect.x, boxSelect.y, boxSelect.width, boxSelect.height);
+            shapes.setColor(0, 1, 0, 1);
+            shapes.circle(startMouseDownPosition.x, startMouseDownPosition.y, 5);
         }
-        shapes.setColor(1,0,0,1);
-        shapes.circle(mousePosition.x,mousePosition.y,5);
+        shapes.setColor(1, 0, 0, 1);
+        shapes.circle(mousePosition.x, mousePosition.y, 5);
 
 
-        shapes.end();;
+        shapes.end();
+
     }
 
     /**
      * Select all Units inside BoxSelect. Remember only UNITS can be selected via box select
      */
-    private void boxSelectUnits()
-    {
+    private void boxSelectUnits() {
         //Clear Selections
         clearSelections();
 
         //Grab new SelectedUnits (if any)
         selectedUnits = CollisionManager.getInstance().getSelectedUnits(boxSelect);
-        if(selectedUnits!=null)
-        {
-            for(Squad squad: selectedUnits)
-            {
+        if (selectedUnits != null && selectedUnits.size() > 0) {
+            for (Squad squad : selectedUnits) {
                 squad.setSelectedType(SelectedTypes.Selected);
             }
+            currentState = PlayerState.Commanding;
+        } else {
+            currentState = PlayerState.Default;
         }
-        log.info("SelectedUnits:"+selectedUnits.size());
     }
 
 
-    private void clearSelections()
-    {
-        if(selectedUnits!=null)
-        {
-            for(Squad squad: selectedUnits)
-            {
+    private void clearSelections() {
+        if (selectedUnits != null) {
+            for (Squad squad : selectedUnits) {
                 squad.setSelectedType(SelectedTypes.None);
             }
         }
-        if(selectedBuildings!=null)
-        {
-            for(Building building: selectedBuildings)
-            {
+        if (selectedBuildings != null) {
+            for (Building building : selectedBuildings) {
                 building.setSelectedType(SelectedTypes.None);
             }
         }
@@ -153,6 +147,18 @@ public class PlayerController implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if (currentState == PlayerState.Commanding) {
+            switch (keycode) {
+                case Input.Keys.Q:
+//                    order = SquadOrderCommand.AttackMove;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         updateMousePosition();
         return false;
     }
@@ -172,32 +178,65 @@ public class PlayerController implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        updateMousePosition();
         //Process Left Mouse Button
         if (button == Input.Buttons.LEFT) {
             if (leftMouseState == MouseButtonState.Up) {
+                //Just Pressed
                 leftMouseJustPressed = true;
                 leftMouseState = MouseButtonState.Down;
                 startMouseDownPosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
                 //Unproject the mouse Start
                 gameState.unproject(startMouseDownPosition);
-//                log.info("SETTING MOUSEDOWN START");
-            } else {
-                leftMouseJustPressed = false;
+                updateBoxSelect();
+            }
+        }
+        if (button == Input.Buttons.RIGHT) {
+            //Right Mouse was JUST Pressed
+            if (rightMouseState == MouseButtonState.Up) {
+                //Just Pressed
+                rightMouseState = MouseButtonState.Down;
+                if (selectedUnits.size() > 0) {
+                    //If shift is pressed we QUEUE the order, otherwise we Set It.
+                    SquadOrder order = null;
+
+                    //Create the Squad Order
+                    switch (selectedOrderType) {
+                        case Move:
+                        case AttackMove:
+                            order = new SquadOrder(selectedOrderType, mousePosition); //Location
+                            break;
+                        case AttackTarget:
+                        case GaurdTarget:
+                            //CollisionManager should return an Actor not a Squad,
+                            Actor target = CollisionManager.getInstance().getActor(mousePosition);
+                            order = new SquadOrder(selectedOrderType, target); //Target
+                            break;
+                        case HoldFire:
+                            order = new SquadOrder(selectedOrderType); //Self
+                            break;
+                    }
+                    if (order != null) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                            SquadManager.getInstance().queueOrder(selectedUnits, order);
+                        } else {
+                            SquadManager.getInstance().setOrder(selectedUnits, order);
+                        }
+                    }
+                }
             }
         }
         return true;
     }
 
 
-    private void updateBoxSelect()
-    {
+    private void updateBoxSelect() {
         float minX = Math.min(startMouseDownPosition.x, mousePosition.x);
         float maxX = Math.max(startMouseDownPosition.x, mousePosition.x);
         float minY = Math.min(startMouseDownPosition.y, mousePosition.y);
         float maxY = Math.max(startMouseDownPosition.y, mousePosition.y);
-        boxSelect.set(minX, minY, maxX-minX, maxY-minY);
+        boxSelect.set(minX, minY, maxX - minX, maxY - minY);
     }
-
 
 
     @Override
@@ -208,14 +247,18 @@ public class PlayerController implements InputProcessor {
             boxSelectUnits();
             leftMouseState = MouseButtonState.Up;
         }
+        if (button == Input.Buttons.RIGHT) {
+            //Just Pressed
+            rightMouseState = MouseButtonState.Up;
+        }
+
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         updateMousePosition();
-        if(leftMouseState == MouseButtonState.Down)
-        {
+        if (leftMouseState == MouseButtonState.Down) {
             leftMouseState = MouseButtonState.HeldDown;
             //Update BoxSelect
             updateBoxSelect();
@@ -235,8 +278,7 @@ public class PlayerController implements InputProcessor {
     }
 
 
-    private void updateMousePosition()
-    {
+    private void updateMousePosition() {
         mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         //Unproject the MousePosition
         gameState.unproject(mousePosition);

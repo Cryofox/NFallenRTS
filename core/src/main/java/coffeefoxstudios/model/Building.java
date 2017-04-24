@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 /**
  * Created by Ryder Stancescu on 4/23/2017.
  */
-public class Building implements Renderable {
+public class Building extends Actor implements Renderable {
     @Override
     public Vector3 getPosition() {
         return null;

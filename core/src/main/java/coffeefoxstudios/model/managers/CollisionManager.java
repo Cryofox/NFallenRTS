@@ -1,5 +1,6 @@
 package coffeefoxstudios.model.managers;
 
+import coffeefoxstudios.model.Actor;
 import coffeefoxstudios.model.Squad;
 import coffeefoxstudios.model.utils.Renderable;
 import com.badlogic.gdx.math.Rectangle;
@@ -74,18 +75,29 @@ public class CollisionManager {
      * @param point
      * @return
      */
-    public Squad getSquad(Vector2 point)
+    public Actor getActor(Vector2 point)
     {
         for(Renderable renderable : squads)
         {
             if(renderable.getBoundingBox().contains(point))
             {
-                return (Squad)renderable;
+                return (Actor)renderable;
             }
         }
         return null;
     }
 
+    public Actor getActor(Vector3 point)
+    {
+        for(Renderable renderable : squads)
+        {
+            if(renderable.getBoundingBox().contains(point.x,point.y))
+            {
+                return (Actor)renderable;
+            }
+        }
+        return null;
+    }
     /**
      * Checks ALL Render Lists
      * @param point

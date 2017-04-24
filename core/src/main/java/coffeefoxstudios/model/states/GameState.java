@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -151,11 +152,11 @@ public class GameState {
         //Render ViewPort BackDrop
         //------------
         //Set Camera BackDropColor
-//
-//        shapes.begin(ShapeRenderer.ShapeType.Filled);
-//        shapes.setColor(.5f, .5f, 0.5f, 1);
-//        shapes.rect(gameCamera.position.x - halfWidth, gameCamera.position.y - halfHeight, viewport.getScreenWidth(), viewport.getScreenHeight());
-//        shapes.end();
+        ShapeRenderer shapes = renderer.getShapeRenderer();
+        shapes.begin(ShapeRenderer.ShapeType.Filled);
+        shapes.setColor(.5f, .5f, 0.5f, 1);
+        shapes.rect(gameCamera.position.x - halfWidth, gameCamera.position.y - halfHeight, viewport.getScreenWidth(), viewport.getScreenHeight());
+        shapes.end();
         //============
 
         //Render Game

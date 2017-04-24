@@ -1,6 +1,7 @@
 package coffeefoxstudios.model.managers;
 
 import coffeefoxstudios.model.Squad;
+import coffeefoxstudios.model.states.commands.SquadOrder;
 import coffeefoxstudios.model.utils.RenderUtil;
 import com.badlogic.gdx.math.Vector3;
 
@@ -35,12 +36,8 @@ public class SquadManager  {
 
         //Add to CollisionManager
         CollisionManager.getInstance().addSquad(squad);
-
-
         return squad;
     }
-
-
 
 
 
@@ -55,18 +52,32 @@ public class SquadManager  {
 
 
     public void render(RenderUtil renderer) {
-
         for(Squad squad : squadList)
         {
             squad.render(renderer);
         }
     }
 
-
     public void renderDebug(RenderUtil renderer) {
         for(Squad squad : squadList)
         {
             squad.renderDebug(renderer);
+        }
+    }
+
+
+    public void setOrder(List<Squad> squads, SquadOrder order)
+    {
+        for(Squad squad : squads)
+        {
+            squad.setOrder(order);
+        }
+    }
+    public void queueOrder(List<Squad> squads, SquadOrder order)
+    {
+        for(Squad squad : squads)
+        {
+            squad.queueOrder(order);
         }
     }
 
