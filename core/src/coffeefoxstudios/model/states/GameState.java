@@ -60,7 +60,7 @@ public class GameState {
 
     private void stubInitialize() {
         SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
-        SquadManager.getInstance().spawnSquad(new Vector3(10, 10, 0));
+        SquadManager.getInstance().spawnSquad(new Vector3(30, 30, 0));
     }
 
 
