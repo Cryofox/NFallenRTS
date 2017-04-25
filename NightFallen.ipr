@@ -58,6 +58,9 @@
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+  </component>
   <component name="libraryTable">
     <library name="commons-logging-1.2">
       <CLASSES>
@@ -73,6 +76,70 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/gdx-1.9.6-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="gdx-backend-lwjgl-1.9.6">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/gdx-backend-lwjgl-1.9.61.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.6/54887b828ab0c6c55deae03b0cca70c31531bacd/gdx-backend-lwjgl-1.9.6-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="gdx-platform-1.9.6-natives-desktop">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/gdx-platform-1.9.6-natives-desktop1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jinput-2.0.5">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jinput-2.0.51.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput/2.0.5/82604cfeb87b9ab70ed70aa19a137de8ceb21504/jinput-2.0.5-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="jinput-platform-2.0.5-natives-linux">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jinput-platform-2.0.5-natives-linux1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jinput-platform-2.0.5-natives-osx">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jinput-platform-2.0.5-natives-osx1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jinput-platform-2.0.5-natives-windows">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jinput-platform-2.0.5-natives-windows1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jlayer-1.0.1-gdx">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jlayer-1.0.1-gdx1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.jlayer/jlayer/1.0.1-gdx/f1c4ffebc5e4f68be914404faab580c20de8ea1f/jlayer-1.0.1-gdx-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="jorbis-0.0.17">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jorbis-0.0.171.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jcraft/jorbis/0.0.17/5446be5d62e4c6b347c8e6cd28dc00a936417ba2/jorbis-0.0.17-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="junit-4.10">
@@ -93,6 +160,15 @@
         <root url="jar://$PROJECT_DIR$/testlib/TestNG/junit-4.10-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="jutils-1.0.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jutils-1.0.01.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.jutils/jutils/1.0.0/d18678a00b216863206a1bb6190507e02a32971b/jutils-1.0.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="libgdx-utils-0.13.4">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/libgdx-utils-0.13.4.jar!/" />
@@ -108,6 +184,45 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+    </library>
+    <library name="lwjgl-2.9.2">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/lwjgl-2.9.21.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl/2.9.2/4d114b5ef3ad3bf571b1f090cb00855991067e0b/lwjgl-2.9.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="lwjgl-platform-2.9.2-natives-linux">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/lwjgl-platform-2.9.2-natives-linux1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="lwjgl-platform-2.9.2-natives-osx">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/lwjgl-platform-2.9.2-natives-osx1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="lwjgl-platform-2.9.2-natives-windows">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/lwjgl-platform-2.9.2-natives-windows1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="lwjgl_util-2.9.2">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/lwjgl_util-2.9.21.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl_util/2.9.2/308d4ebe8d7b240d3490b6a7e0424807ea3ad98b/lwjgl_util-2.9.2-sources.jar!/" />
+      </SOURCES>
     </library>
     <library name="testng-6.9.6">
       <CLASSES>
