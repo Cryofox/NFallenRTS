@@ -1,7 +1,7 @@
 *.class
 
 # Package Files #
-
+*.jar
 *.war
 *.ear
 *.iws
@@ -17,3 +17,5 @@ out/
 gen/
 local.properties
 !gradle/
+
+!lib/*.jar
