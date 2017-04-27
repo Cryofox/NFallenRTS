@@ -1,11 +1,10 @@
-package coffeefoxstudios.model;
+package coffeefoxstudios.model.actors;
 
 /**
  * Created by Ryder Stancescu on 4/23/2017.
  */
 
 import coffeefoxstudios.model.states.commands.SquadOrder;
-import coffeefoxstudios.model.states.commands.SquadOrderCommand;
 import coffeefoxstudios.model.states.commands.SquadOrderType;
 import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;
@@ -13,11 +12,11 @@ import coffeefoxstudios.model.utils.SelectedTypes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,23 +30,33 @@ public class Squad extends Actor implements Renderable {
 
     private Vector3 position = new Vector3(0, 0, 0);
     SelectedTypes selectedType = SelectedTypes.None;
-
     List<SquadOrder> orders = new ArrayList<>();
 
     boolean holdFire = false;
-
     public int getMovePriority() {
         return movePriority;
     }
 
-
     int movePriority = 0;
-
     Vector3 currentVelocity = new Vector3(0, 0, 0);
-    float personalSpaceRadius = 18;
-    float detectionRadius = 30;
+
+    float waypointRemovalRadius = 1;
+    float personalSpaceRadius = 18; //This should be used for pathDetection
+
+    public float getPersonalSpaceRadius() {
+        return personalSpaceRadius;
+    }
+
+    public float getDetectionRadius() {
+        return detectionRadius;
+    }
+
+    float detectionRadius = 30*3;     //This should be used for unit avoidance
     float boxWidth = 10;
 
+    float maxForce =10.4f*5;
+    float maxSpeed =10*5;
+    float mass =1;
     @Override
     public Rectangle getBoundingBox() {
         //Find smallestX and smallest y in list, largest X, and largest Y.
@@ -79,9 +88,14 @@ public class Squad extends Actor implements Renderable {
 //                moveTowards(orders.get(0).getPosition());
 
                 Vector3 movePos = orders.get(0).getPosition();
-                seek(movePos);
-                if (Vector3.dst(position.x, position.y, position.z, movePos.x, movePos.y, movePos.z) < detectionRadius) {
+                if(orders.size()==1)
+                { arrival(movePos);}
+                else
+                {seek(movePos);}
+                if (Vector3.dst(position.x, position.y, position.z, movePos.x, movePos.y, movePos.z) < personalSpaceRadius) {
                     orders.remove(0);
+                    if(orders.size()==0) //Stop Moving
+                    {currentVelocity.set(Vector3.Zero);}
                 }
             }
         } else {
@@ -195,12 +209,110 @@ public class Squad extends Actor implements Renderable {
     }
 
 
-    float maxForce =10.4f;
-    float maxSpeed =10;
-    float mass =1;
+
 
 
     //Locomotion LowLevel
+
+    //Low Level 3: Predictive Chase
+    void chase(Squad chase){}
+    //Low Level 2: Arrival
+
+    //Need a nonlinear arrival. Need to easOut
+    //Arrival Acts upon the current velocity
+    void arrival(Vector3 target, float minPercent)
+    {
+        Vector3 steering = Vector3.Zero;
+        Vector3 desiredVelocity =  new Vector3(target);
+        desiredVelocity.sub(position);
+
+
+        float distance = desiredVelocity.len();
+        if(distance < detectionRadius)
+        {
+            //Need to slow down
+            float prcntFromTarget=((distance-personalSpaceRadius)/ (detectionRadius-personalSpaceRadius));
+            if(prcntFromTarget<minPercent)
+            {    prcntFromTarget=minPercent;}
+            desiredVelocity.nor();
+            desiredVelocity.x*=maxSpeed*prcntFromTarget;
+            desiredVelocity.y*=maxSpeed*prcntFromTarget;
+        }
+        else
+        {
+            desiredVelocity.nor();
+            desiredVelocity.x*=maxSpeed;
+            desiredVelocity.y*=maxSpeed;
+        }
+        steering = desiredVelocity.sub(currentVelocity);
+        // Truncate Steering to maxForce
+        if(steering.len() > maxForce)
+        {
+            steering.nor();
+            steering.x *= maxForce;
+            steering.y *= maxForce;
+        }
+        //Scale Steering via Mass
+        steering.x /=mass;
+        steering.y /=mass;
+        steering.z /=mass;
+
+        //Modify Velocity
+        currentVelocity.add(steering);
+        // Truncate Velocity to maxSpeed
+        if(currentVelocity.len() > maxSpeed)
+        {
+            currentVelocity.nor();
+            currentVelocity.x *= maxSpeed;
+            currentVelocity.y *= maxSpeed;
+        }
+    }
+    void arrival(Vector3 target)
+    {
+        Vector3 steering = Vector3.Zero;
+        Vector3 desiredVelocity =  new Vector3(target);
+        desiredVelocity.sub(position);
+
+
+        float distance = desiredVelocity.len();
+        if(distance < detectionRadius)
+        {
+            //Need to slow down
+            float prcntFromTarget=((distance-personalSpaceRadius)/ (detectionRadius-personalSpaceRadius));
+            desiredVelocity.nor();
+            desiredVelocity.x*=maxSpeed*prcntFromTarget;
+            desiredVelocity.y*=maxSpeed*prcntFromTarget;
+        }
+        else
+        {
+            desiredVelocity.nor();
+            desiredVelocity.x*=maxSpeed;
+            desiredVelocity.y*=maxSpeed;
+        }
+        steering = desiredVelocity.sub(currentVelocity);
+        // Truncate Steering to maxForce
+        if(steering.len() > maxForce)
+        {
+            steering.nor();
+            steering.x *= maxForce;
+            steering.y *= maxForce;
+        }
+        //Scale Steering via Mass
+        steering.x /=mass;
+        steering.y /=mass;
+        steering.z /=mass;
+
+        //Modify Velocity
+        currentVelocity.add(steering);
+        // Truncate Velocity to maxSpeed
+        if(currentVelocity.len() > maxSpeed)
+        {
+            currentVelocity.nor();
+            currentVelocity.x *= maxSpeed;
+            currentVelocity.y *= maxSpeed;
+        }
+    }
+    //Low Level 1: Seek/Evade
     void seek(Vector3 target)
     {
         Vector3 steering = Vector3.Zero;
@@ -235,5 +347,9 @@ public class Squad extends Actor implements Renderable {
             currentVelocity.y *= maxSpeed;
         }
     }
+
+    void evade(Vector3 target)
+    {}
+
 
 }

@@ -1,9 +1,9 @@
 package coffeefoxstudios.model.states.controllers;
 
 
-import coffeefoxstudios.model.Actor;
-import coffeefoxstudios.model.Building;
-import coffeefoxstudios.model.Squad;
+import coffeefoxstudios.model.actors.Actor;
+import coffeefoxstudios.model.actors.Building;
+import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.managers.CollisionManager;
 import coffeefoxstudios.model.managers.SquadManager;
 import coffeefoxstudios.model.states.GameState;

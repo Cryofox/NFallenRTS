@@ -1,4 +1,4 @@
-package coffeefoxstudios.model;
+package coffeefoxstudios.model.actors;
 
 import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;

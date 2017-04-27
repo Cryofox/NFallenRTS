@@ -1,6 +1,6 @@
 package coffeefoxstudios.model.states.commands;
 
-import coffeefoxstudios.model.Actor;
+import coffeefoxstudios.model.actors.Actor;
 import com.badlogic.gdx.math.Vector3;
 
 

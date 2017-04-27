@@ -1,6 +1,6 @@
 package coffeefoxstudios.model.managers;
 
-import coffeefoxstudios.model.Squad;
+import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.states.commands.SquadOrder;
 import coffeefoxstudios.model.utils.RenderUtil;
 import com.badlogic.gdx.math.Vector3;

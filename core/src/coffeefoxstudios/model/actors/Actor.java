@@ -1,4 +1,4 @@
-package coffeefoxstudios.model;
+package coffeefoxstudios.model.actors;
 
 /**
  * Created by Ryder Stancescu on 4/16/2017.

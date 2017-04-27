@@ -1,7 +1,7 @@
 package coffeefoxstudios.model.managers;
 
-import coffeefoxstudios.model.Actor;
-import coffeefoxstudios.model.Squad;
+import coffeefoxstudios.model.actors.Actor;
+import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.utils.Renderable;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
