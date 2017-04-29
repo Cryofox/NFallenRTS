@@ -89,13 +89,17 @@ public class Squad extends Actor implements Renderable {
 
                 Vector3 movePos = orders.get(0).getPosition();
                 if(orders.size()==1)
-                { arrival(movePos);}
+                {
+                    arrival(movePos);
+                }
                 else
                 {seek(movePos);}
                 if (Vector3.dst(position.x, position.y, position.z, movePos.x, movePos.y, movePos.z) < personalSpaceRadius) {
                     orders.remove(0);
                     if(orders.size()==0) //Stop Moving
-                    {currentVelocity.set(Vector3.Zero);}
+                    {
+                        currentVelocity.set(Vector3.Zero);
+                    }
                 }
             }
         } else {
