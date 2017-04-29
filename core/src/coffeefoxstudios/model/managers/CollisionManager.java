@@ -4,6 +4,7 @@ import coffeefoxstudios.model.actors.Actor;
 import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.utils.Renderable;
 import coffeefoxstudios.model.utils.Tuple;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -67,6 +68,16 @@ public class CollisionManager {
             return true;
         }
         return false;
+    }
+
+    private boolean collides(Circle circle, Vector2 vector) {
+        return (circle.contains(vector) || circle.contains(vector));
+    }
+
+    private boolean collides(Circle circle1, Circle circle2) {
+        return (circle1.contains(circle2) || circle2.contains(circle1)
+                || circle1.overlaps(circle2));
+
     }
 
     private boolean collides(Rectangle rect1, Vector3 point) {
@@ -148,15 +159,18 @@ public class CollisionManager {
                 //Check if this position is valid for our Circle
                 collides = false;
                 for (Tuple<Squad, Vector3> stuple : finalSquadPositions) {
-                    Rectangle potentialBoxCur = new Rectangle(remainingSquads.get(0).getBoundingBox());
-                    potentialBoxCur.x = position.x - potentialBoxCur.width / 2;
-                    potentialBoxCur.y = position.y - potentialBoxCur.height / 2;
+                    //Circle is better  than rect due to last positioning.
+                    Circle circleCur = new Circle();
+                    circleCur.setX(position.x);
+                    circleCur.setY(position.y);
+                    circleCur.setRadius(remainingSquads.get(0).getPersonalSpaceRadius());
 
-                    Rectangle potentialBoxPlaced = new Rectangle(stuple.getElement1().getBoundingBox());
-                    potentialBoxPlaced.x = stuple.getElement2().x - potentialBoxPlaced.width / 2;
-                    potentialBoxPlaced.y = stuple.getElement2().y - potentialBoxPlaced.height / 2;
+                    Circle circlePlaced = new Circle();
+                    circlePlaced.setX(stuple.getElement2().x);
+                    circlePlaced.setY(stuple.getElement2().y);
+                    circlePlaced.setRadius(stuple.getElement1().getPersonalSpaceRadius());
 
-                    if (collides(potentialBoxPlaced, potentialBoxCur)) {
+                    if (collides(circleCur, circlePlaced)) {
                         collides = true;
                         break;
                     }
@@ -181,6 +195,11 @@ public class CollisionManager {
         Vector2 vector = new Vector2(position.x, position.y + 1);
         if (!closedSet.contains(vector))
             positionList.add(vector);
+        //L
+        vector = (new Vector2(position.x - 1, position.y));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+
         //D
         vector = (new Vector2(position.x, position.y - 1));
         if (!closedSet.contains(vector))
@@ -189,13 +208,14 @@ public class CollisionManager {
         vector = (new Vector2(position.x + 1, position.y));
         if (!closedSet.contains(vector))
             positionList.add(vector);
-        //L
-        vector = (new Vector2(position.x - 1, position.y));
-        if (!closedSet.contains(vector))
-            positionList.add(vector);
+
 
         //TR
         vector = (new Vector2(position.x + 1, position.y + 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //BL
+        vector = (new Vector2(position.x - 1, position.y - 1));
         if (!closedSet.contains(vector))
             positionList.add(vector);
         //BR
@@ -206,10 +226,7 @@ public class CollisionManager {
         vector = (new Vector2(position.x - 1, position.y + 1));
         if (!closedSet.contains(vector))
             positionList.add(vector);
-        //BL
-        vector = (new Vector2(position.x - 1, position.y - 1));
-        if (!closedSet.contains(vector))
-            positionList.add(vector);
+
     }
 
 }

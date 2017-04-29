@@ -41,7 +41,7 @@ public class Squad extends Actor implements Renderable {
     Vector3 currentVelocity = new Vector3(0, 0, 0);
 
     float waypointRemovalRadius = 1;
-    float personalSpaceRadius = 18; //This should be used for pathDetection
+    float personalSpaceRadius = 20; //This should be used for pathDetection
 
     public float getPersonalSpaceRadius() {
         return personalSpaceRadius;
@@ -52,7 +52,7 @@ public class Squad extends Actor implements Renderable {
     }
 
     float detectionRadius = 30*3;     //This should be used for unit avoidance
-    float boxWidth = 10;
+    float boxWidth = 18;
 
     float maxForce =10.4f*5;
     float maxSpeed =10*5;
