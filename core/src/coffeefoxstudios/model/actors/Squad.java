@@ -94,7 +94,7 @@ public class Squad extends Actor implements Renderable {
                 }
                 else
                 {seek(movePos);}
-                if (Vector3.dst(position.x, position.y, position.z, movePos.x, movePos.y, movePos.z) < personalSpaceRadius) {
+                if (Vector3.dst(position.x, position.y, position.z, movePos.x, movePos.y, movePos.z) < 1) {
                     orders.remove(0);
                     if(orders.size()==0) //Stop Moving
                     {
@@ -279,10 +279,10 @@ public class Squad extends Actor implements Renderable {
 
 
         float distance = desiredVelocity.len();
-        if(distance < detectionRadius)
+        if(distance < personalSpaceRadius)
         {
             //Need to slow down
-            float prcntFromTarget=((distance-personalSpaceRadius)/ (detectionRadius-personalSpaceRadius));
+            float prcntFromTarget=((distance)/ (personalSpaceRadius));
             desiredVelocity.nor();
             desiredVelocity.x*=maxSpeed*prcntFromTarget;
             desiredVelocity.y*=maxSpeed*prcntFromTarget;

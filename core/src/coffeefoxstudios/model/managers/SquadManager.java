@@ -2,7 +2,9 @@ package coffeefoxstudios.model.managers;
 
 import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.states.commands.SquadOrder;
+import coffeefoxstudios.model.states.commands.SquadOrderType;
 import coffeefoxstudios.model.utils.RenderUtil;
+import coffeefoxstudios.model.utils.Tuple;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -60,16 +62,45 @@ public class SquadManager {
 
 
     public void setOrder(List<Squad> squads, SquadOrder order) {
-        for (Squad squad : squads) {
-            squad.setOrder(order);
+        //Location based movements require offsetting
+        if(order.getCommandType() == SquadOrderType.Location)
+        {
+            List<Tuple<Squad,Vector3>> squadSpecificOrders = CollisionManager.getInstance().getFinalPosition(squads, order.getPosition());
+            for(Tuple<Squad,Vector3> tuple : squadSpecificOrders)
+            {
+                SquadOrder newOrder= new SquadOrder(order.getCommand(),tuple.getElement2());
+                tuple.getElement1().setOrder(newOrder);
+            }
+        }
+        else {
+            for (Squad squad : squads) {
+                //Apply conditional logic for Formation
+                squad.setOrder(order);
+            }
         }
     }
 
     public void queueOrder(List<Squad> squads, SquadOrder order) {
-        for (Squad squad : squads) {
-            squad.queueOrder(order);
+        //Location based movements require offsetting
+        if(order.getCommandType() == SquadOrderType.Location)
+        {
+            List<Tuple<Squad,Vector3>> squadSpecificOrders = CollisionManager.getInstance().getFinalPosition(squads, order.getPosition());
+            for(Tuple<Squad,Vector3> tuple : squadSpecificOrders)
+            {
+                SquadOrder newOrder= new SquadOrder(order.getCommand(),tuple.getElement2());
+                tuple.getElement1().queueOrder(newOrder);
+            }
+        }
+        else {
+            for (Squad squad : squads) {
+                //Apply conditional logic for Formation
+                squad.queueOrder(order);
+            }
         }
     }
+
+
+
 
 
 }

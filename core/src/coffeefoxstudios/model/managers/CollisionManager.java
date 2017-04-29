@@ -3,12 +3,15 @@ package coffeefoxstudios.model.managers;
 import coffeefoxstudios.model.actors.Actor;
 import coffeefoxstudios.model.actors.Squad;
 import coffeefoxstudios.model.utils.Renderable;
+import coffeefoxstudios.model.utils.Tuple;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -66,6 +69,14 @@ public class CollisionManager {
         return false;
     }
 
+    private boolean collides(Rectangle rect1, Vector3 point) {
+        return (rect1.contains(point.x, point.y));
+    }
+
+    private boolean collides(Rectangle rect1, Vector2 point) {
+        return (rect1.contains(point));
+    }
+
     /**
      * Gets the Squad that is highlighted over the position.
      *
@@ -103,6 +114,102 @@ public class CollisionManager {
             }
         }
         return null;
+    }
+
+    public List<Tuple<Squad, Vector3>> getFinalPosition(List<Squad> squads, Vector3 target) {
+        if (squads == null || target == null)
+            return null;
+
+        List<Squad> remainingSquads = new ArrayList<>();
+        remainingSquads.addAll(squads);
+
+        List<Tuple<Squad, Vector3>> finalSquadPositions = new ArrayList<>();
+
+        //Increment.
+        Set<Vector2> closedSet = new HashSet<>();
+
+        List<Vector2> positions = new ArrayList<>();
+        positions.add(new Vector2(target.x, target.y));
+
+        Vector2 position = null;
+        boolean collides = false;
+        while (remainingSquads.size() > 0 && positions.size() > 0) {
+            //Get position
+            position = positions.get(0);
+            positions.remove(0);
+            //If the closedSet does not already have this position
+            if (!closedSet.contains(position)) {
+                //Append to Visiting/Closed Set
+                closedSet.add(position);
+
+                //Get Neighbours and append to List
+                addGridNeighbours(positions, closedSet, position);
+
+                //Check if this position is valid for our Circle
+                collides = false;
+                for (Tuple<Squad, Vector3> stuple : finalSquadPositions) {
+                    Rectangle potentialBoxCur = new Rectangle(remainingSquads.get(0).getBoundingBox());
+                    potentialBoxCur.x = position.x - potentialBoxCur.width / 2;
+                    potentialBoxCur.y = position.y - potentialBoxCur.height / 2;
+
+                    Rectangle potentialBoxPlaced = new Rectangle(stuple.getElement1().getBoundingBox());
+                    potentialBoxPlaced.x = stuple.getElement2().x - potentialBoxPlaced.width / 2;
+                    potentialBoxPlaced.y = stuple.getElement2().y - potentialBoxPlaced.height / 2;
+
+                    if (collides(potentialBoxPlaced, potentialBoxCur)) {
+                        collides = true;
+                        break;
+                    }
+                }
+                if (collides == false) {
+                    //Create Tuple
+                    Tuple<Squad, Vector3> tuple = new Tuple<Squad, Vector3>();
+                    tuple.setElement1(remainingSquads.get(0));
+                    tuple.setElement2(new Vector3(position.x, position.y, 0));
+                    //Store Tuple
+                    finalSquadPositions.add(tuple);
+                    //Remove from Remaining Squads
+                    remainingSquads.remove(0);
+                }
+            }
+        }
+        return finalSquadPositions;
+    }
+
+    void addGridNeighbours(List<Vector2> positionList, Set<Vector2> closedSet, Vector2 position) {
+        //U
+        Vector2 vector = new Vector2(position.x, position.y + 1);
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //D
+        vector = (new Vector2(position.x, position.y - 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //R
+        vector = (new Vector2(position.x + 1, position.y));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //L
+        vector = (new Vector2(position.x - 1, position.y));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+
+        //TR
+        vector = (new Vector2(position.x + 1, position.y + 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //BR
+        vector = (new Vector2(position.x + 1, position.y - 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //TL
+        vector = (new Vector2(position.x - 1, position.y + 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
+        //BL
+        vector = (new Vector2(position.x - 1, position.y - 1));
+        if (!closedSet.contains(vector))
+            positionList.add(vector);
     }
 
 }
