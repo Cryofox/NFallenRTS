@@ -268,9 +268,15 @@ public class PlayerController implements InputProcessor {
         return true;
     }
 
+
     @Override
     public boolean scrolled(int amount) {
-        return false;
+        log.info("Scroll Amount:"+ amount);
+        if(gameState!=null) {
+            gameState.zoomCamera(-(float)amount*0.1f);
+
+        }
+        return true;
     }
 
 

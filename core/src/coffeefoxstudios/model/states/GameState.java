@@ -157,7 +157,7 @@ public class GameState {
         ShapeRenderer shapes = renderer.getShapeRenderer();
         shapes.begin(ShapeRenderer.ShapeType.Filled);
         shapes.setColor(.5f, .5f, 0.5f, 1);
-        shapes.rect(gameCamera.position.x - halfWidth, gameCamera.position.y - halfHeight, viewport.getScreenWidth(), viewport.getScreenHeight());
+        shapes.rect(gameCamera.position.x - halfWidth*gameCamera.zoom, gameCamera.position.y - halfHeight*gameCamera.zoom, viewport.getScreenWidth()*gameCamera.zoom, viewport.getScreenHeight()*gameCamera.zoom);
         shapes.end();
         //============
 
@@ -225,5 +225,19 @@ public class GameState {
     }
 
     void renderGUIDebugOverlay() {
+    }
+
+    int maxZoom = 5;
+    int minZoom = 1;
+    public void zoomCamera(float amount)
+    {
+        float zoom = gameCamera.zoom -amount;
+        if(zoom < minZoom) zoom = minZoom;
+
+        zoom = (zoom<minZoom)? minZoom: zoom;
+        zoom = (zoom>maxZoom)? maxZoom: zoom;
+        gameCamera.zoom= zoom;
+        //Update the Camera (For Culling?)
+        gameCamera.update();
     }
 }
