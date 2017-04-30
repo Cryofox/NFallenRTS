@@ -1,8 +1,8 @@
 package coffeefoxstudios.model.managers;
 
-import coffeefoxstudios.model.actors.Squad;
-import coffeefoxstudios.model.states.commands.SquadOrder;
-import coffeefoxstudios.model.states.commands.SquadOrderType;
+import coffeefoxstudios.model.actors.squads.Squad;
+import coffeefoxstudios.model.actors.squads.commands.SquadOrder;
+import coffeefoxstudios.model.actors.squads.commands.SquadOrderType;
 import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Tuple;
 import com.badlogic.gdx.math.Vector3;

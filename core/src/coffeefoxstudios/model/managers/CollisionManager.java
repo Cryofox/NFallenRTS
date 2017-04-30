@@ -1,7 +1,7 @@
 package coffeefoxstudios.model.managers;
 
 import coffeefoxstudios.model.actors.Actor;
-import coffeefoxstudios.model.actors.Squad;
+import coffeefoxstudios.model.actors.squads.Squad;
 import coffeefoxstudios.model.utils.Renderable;
 import coffeefoxstudios.model.utils.Tuple;
 import com.badlogic.gdx.math.Circle;
@@ -163,12 +163,12 @@ public class CollisionManager {
                     Circle circleCur = new Circle();
                     circleCur.setX(position.x);
                     circleCur.setY(position.y);
-                    circleCur.setRadius(remainingSquads.get(0).getPersonalSpaceRadius());
+                    circleCur.setRadius(remainingSquads.get(0).getPersonalSpaceRadius()+1);
 
                     Circle circlePlaced = new Circle();
                     circlePlaced.setX(stuple.getElement2().x);
                     circlePlaced.setY(stuple.getElement2().y);
-                    circlePlaced.setRadius(stuple.getElement1().getPersonalSpaceRadius());
+                    circlePlaced.setRadius(stuple.getElement1().getPersonalSpaceRadius()+1);
 
                     if (collides(circleCur, circlePlaced)) {
                         collides = true;

@@ -2,14 +2,14 @@ package coffeefoxstudios.model.states.controllers;
 
 
 import coffeefoxstudios.model.actors.Actor;
-import coffeefoxstudios.model.actors.Building;
-import coffeefoxstudios.model.actors.Squad;
+import coffeefoxstudios.model.actors.buildings.Building;
+import coffeefoxstudios.model.actors.squads.Squad;
 import coffeefoxstudios.model.managers.CollisionManager;
 import coffeefoxstudios.model.managers.SquadManager;
 import coffeefoxstudios.model.states.GameState;
 import coffeefoxstudios.model.states.PlayerState;
-import coffeefoxstudios.model.states.commands.SquadOrder;
-import coffeefoxstudios.model.states.commands.SquadOrderCommand;
+import coffeefoxstudios.model.actors.squads.commands.SquadOrder;
+import coffeefoxstudios.model.actors.squads.commands.SquadOrderCommand;
 import coffeefoxstudios.model.utils.RenderUtil;
 import coffeefoxstudios.model.utils.Renderable;
 

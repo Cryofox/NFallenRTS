@@ -23,15 +23,22 @@ public class GameState {
 
     RenderUtil renderer = null;
 
-    OrthographicCamera gameCamera;
+
     Vector2 cameraTranslation = new Vector2(0, 0);
-    Viewport viewport;
+
+
 
     PlayerController playerController;
+
+
+    OrthographicCamera gameCamera,uiCamera;
+    Viewport gameViewport, uiViewport;
+    //UI View
+//    GameView uiView;
+
     //Screen HalfDimensions
     int halfWidth = 1;
     int halfHeight = 1;
-
     public GameState(SpriteBatch spriteBatch) {
         renderer = new RenderUtil();
 
@@ -41,19 +48,24 @@ public class GameState {
         // Constructs a new OrthographicCamera, using the given viewport width and height
         // Height is multiplied by aspect ratio.
         gameCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        gameCamera = new OrthographicCamera(30, 30 * (h / w));
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), gameCamera);
+        gameViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), gameCamera);
 //        viewport = new ScalingViewport(Scaling.none, (float) Gdx.graphics.getWidth(), (float) Gdx.graphics.getHeight(), gameCamera);
-        viewport.apply();
+        uiViewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), uiCamera);
 
-
-        halfWidth = viewport.getScreenWidth() / 2;
-        halfHeight = viewport.getScreenHeight() / 2;
+        gameViewport.apply();
+        uiViewport.apply();
+        halfWidth = gameViewport.getScreenWidth() / 2;
+        halfHeight = gameViewport.getScreenHeight() / 2;
         gameCamera.position.set(0, 0, 0);
 
         playerController = new PlayerController(this);
 
         Gdx.input.setInputProcessor(playerController);
+
+//        uiView = new GameView(uiCamera);
+
         stubInitialize();
     }
 
@@ -64,7 +76,9 @@ public class GameState {
         SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
         SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
         SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
-
+        SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
+        SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
+        SquadManager.getInstance().spawnSquad(new Vector3(0, 0, 0));
 
         SquadManager.getInstance().spawnSquad(new Vector3(30, 30, 0));
         SquadManager.getInstance().spawnSquad(new Vector3(100, 100, 0));
@@ -73,9 +87,12 @@ public class GameState {
 
 
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        halfWidth = viewport.getScreenWidth() / 2;
-        halfHeight = viewport.getScreenHeight() / 2;
+        gameViewport.update(width, height);
+        uiViewport.update(width,height);
+
+        halfWidth = gameViewport.getScreenWidth() / 2;
+        halfHeight = gameViewport.getScreenHeight() / 2;
+
     }
 
     /**
@@ -92,10 +109,12 @@ public class GameState {
 
         //Update the Camera (For Culling?)
         gameCamera.update();
+
+        //UI View
+//        uiView.update(deltaTime);
     }
 
     void updateInput(float deltaTime) {
-
         //Update Controller
         playerController.update(deltaTime);
         updateKeyboard();
@@ -108,7 +127,7 @@ public class GameState {
      * @param screenPosition
      */
     public void unproject(Vector3 screenPosition) {
-        gameCamera.unproject(screenPosition, viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+        gameCamera.unproject(screenPosition, gameViewport.getScreenX(), gameViewport.getScreenY(), gameViewport.getScreenWidth(), gameViewport.getScreenHeight());
 //        gameCamera.unproject(screenPosition);
 
     }
@@ -157,7 +176,7 @@ public class GameState {
         ShapeRenderer shapes = renderer.getShapeRenderer();
         shapes.begin(ShapeRenderer.ShapeType.Filled);
         shapes.setColor(.5f, .5f, 0.5f, 1);
-        shapes.rect(gameCamera.position.x - halfWidth*gameCamera.zoom, gameCamera.position.y - halfHeight*gameCamera.zoom, viewport.getScreenWidth()*gameCamera.zoom, viewport.getScreenHeight()*gameCamera.zoom);
+        shapes.rect(gameCamera.position.x - halfWidth*gameCamera.zoom, gameCamera.position.y - halfHeight*gameCamera.zoom, gameViewport.getScreenWidth()*gameCamera.zoom, gameViewport.getScreenHeight()*gameCamera.zoom);
         shapes.end();
         //============
 
@@ -179,6 +198,7 @@ public class GameState {
 
         //Render GUI
         //------------
+        uiView.render();
         //============
 
         //Render GUI Overlays ?

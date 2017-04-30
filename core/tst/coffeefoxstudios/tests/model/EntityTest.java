@@ -7,11 +7,10 @@ import static coffeefoxstudios.tests.CustomAssertions.assertTrue;
 /**
  * Created by Ryder Stancescu on 4/15/2017.
  */
-
+@Test
 public class EntityTest {
 
-
-    @Test
+    @Test(groups = "db")
     public void Test()
     {
 //        int testInt = Entity.someFunction();
